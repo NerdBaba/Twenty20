@@ -11,14 +11,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Build Twenty20.app
-        run: ./scripts/package_app.sh
+      - name: Install create-dmg
+        run: brew install create-dmg
 
-      - name: Zip app
-        run: ditto -c -k --keepParent build/Twenty20.app build/Twenty20.zip
+      - name: Build Twenty20.dmg
+        run: ./scripts/make_dmg.sh
 
       - uses: actions/upload-artifact@v4
         with:
           name: Twenty20-macos
-          path: build/Twenty20.zip
+          path: build/Twenty20.dmg
           retention-days: 30
