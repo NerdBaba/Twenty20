@@ -2,7 +2,7 @@ import AppKit
 import SwiftUI
 
 @MainActor
-final class StatusItemController {
+final class StatusItemController: NSObject, NSMenuDelegate {
     enum Action {
         case breakNow
         case skipBreak
@@ -16,6 +16,9 @@ final class StatusItemController {
     private let scheduler: Scheduler
     private let handler: (Action) -> Void
     private var lastTitle = ""
+    /// Cached login-item state — SMAppService.status is an XPC call, so it
+    /// must not run on every scheduler tick. Refreshed on menu open/toggle.
+    private var loginEnabled = false
 
     private var breakNowItem: NSMenuItem!
     private var skipItem: NSMenuItem!
@@ -26,6 +29,7 @@ final class StatusItemController {
         self.scheduler = scheduler
         self.handler = handler
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        super.init()
         statusItem.button?.image = NSImage(systemSymbolName: "eye", accessibilityDescription: "Twenty20")
         statusItem.button?.image?.isTemplate = true
 
@@ -53,6 +57,19 @@ final class StatusItemController {
         quitItem.target = self
         menu.addItem(quitItem)
         statusItem.menu = menu
+        menu.delegate = self
+        reloadLoginState()
+    }
+
+    /// SMAppService.status is an XPC to loginitemsd — only call it when the
+    /// menu opens or after a toggle, never on the per-second scheduler tick.
+    func reloadLoginState() {
+        loginEnabled = LoginItem.isEnabled
+        loginItem.state = loginEnabled ? .on : .off
+    }
+
+    func menuWillOpen(_ menu: NSMenu) {
+        reloadLoginState()
     }
 
     /// Called by the scheduler on every tick; only touches AppKit when the
@@ -67,10 +84,7 @@ final class StatusItemController {
         breakNowItem.isEnabled = !scheduler.isOnBreak
         skipItem.isEnabled = scheduler.isOnBreak
         pauseItem.isEnabled = !scheduler.isOnBreak
-        let loginState: NSControl.StateValue = LoginItem.isEnabled ? .on : .off
-        if loginItem.state != loginState {
-            loginItem.state = loginState
-        }
+        loginItem.state = loginEnabled ? .on : .off
     }
 
     private static func format(_ seconds: Int) -> String {

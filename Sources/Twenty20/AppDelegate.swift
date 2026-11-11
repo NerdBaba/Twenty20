@@ -79,7 +79,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
             alert.informativeText = error.localizedDescription
             alert.runModal()
         }
-        statusItem.refresh()
+        statusItem.reloadLoginState()
     }
 
     private func showSettings() {
