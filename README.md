@@ -8,7 +8,6 @@ time to look 20 feet away. That's the 20-20-20 rule. Menu bar countdown,
 
 ## Install
 
-Download `Twenty20.dmg` from the latest [Actions run](../../actions),
-open it and drag the app to Applications. First launch: right-click → Open.
-
-Or build it yourself: `./scripts/make_dmg.sh`.
+Download `Twenty20.dmg` from [Releases](../../releases/latest) (or the latest
+[Actions run](../../actions)), open it and drag the app to Applications.
+First launch: right-click → Open.

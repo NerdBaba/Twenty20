@@ -22,3 +22,14 @@ jobs:
           name: Twenty20-macos
           path: build/Twenty20.dmg
           retention-days: 30
+
+      - name: Publish rolling release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git tag -f latest HEAD
+          git push -f origin latest
+          gh release view latest >/dev/null 2>&1 || \
+            gh release create latest --prerelease --title "Twenty20 (latest)" \
+              --notes "Rolling build from main."
+          gh release upload latest build/Twenty20.dmg --clobber
