@@ -16,10 +16,10 @@ cp .build/release/Twenty20 "$APP/Contents/MacOS/"
 cp Info.plist "$APP/Contents/"
 cp PkgInfo "$APP/Contents/" 2>/dev/null || printf 'APPL????' > "$APP/Contents/PkgInfo"
 
-# App icon: render the vector design to an iconset, then compile .icns.
+# App icon: composite the transparent artwork onto the navy gradient.
 ICONSET=build/Twenty20.iconset
 rm -rf "$ICONSET" build/Twenty20.icns
-swift scripts/make_icon.swift "$ICONSET" >/dev/null
+swift scripts/make_iconset.swift Assets/icon-alpha.png "$ICONSET" >/dev/null
 iconutil -c icns "$ICONSET" -o build/Twenty20.icns
 cp build/Twenty20.icns "$APP/Contents/Resources/"
 

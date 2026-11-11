@@ -48,18 +48,6 @@ func drawCentered(_ text: String, font: NSFont, color: NSColor, topY: CGFloat, t
     str.draw(at: CGPoint(x: textX, y: textY))
 }
 
-// Faint eye outline behind the title, echoing the app icon.
-ctx.saveGState()
-ctx.setStrokeColor(CGColor(srgbRed: 1, green: 1, blue: 1, alpha: 0.07))
-ctx.setLineWidth(4)
-let eye = CGMutablePath()
-func pt(_ ux: CGFloat, _ uy: CGFloat) -> CGPoint { CGPoint(x: ux * width, y: (1 - uy) * height) }
-eye.move(to: pt(0.34, 0.30))
-eye.addQuadCurve(to: pt(0.66, 0.30), control: pt(0.50, 0.16))
-eye.addQuadCurve(to: pt(0.34, 0.30), control: pt(0.50, 0.44))
-ctx.addPath(eye)
-ctx.strokePath()
-ctx.restoreGState()
 
 drawCentered("Twenty20", font: .systemFont(ofSize: 120, weight: .bold), color: .white, topY: 190)
 drawCentered("rest your eyes — the 20-20-20 rule", font: .systemFont(ofSize: 40, weight: .regular), color: NSColor(white: 1, alpha: 0.72), topY: 350)
